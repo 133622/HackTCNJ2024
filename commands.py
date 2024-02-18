@@ -5,27 +5,33 @@ import imageProcessing
 import textToSpeech
 import speechToText
 import webbrowser
+import time
 
-def chrome_command(event):
-    if event.name == 'new_tab': 
-        print('new_tab')
-        # keyboard.press('ctrl+t')
-        # keyboard.release('ctrl+t')
-    elif event.name == 'close_tab':
-        print('close_tab')
-        # keyboard.press('ctrl+w')
-        # keyboard.release('ctrl+w')
-    elif event.name == 'new_window':
-        print('new_window')
-        # keyboard.press('ctrl+n')
-        # keyboard.release('ctrl+n')
-    elif event.name == 'close_window':
-        print('close_window')
-        # keyboard.press('ctrl+shift+w')
-        # keyboard.release('ctrl+shift+w')
-    elif event.name == "p":
-        print("screenshot")
+application_name = "desktop" # store the name of the application that is currently open
+active_window = False # flag to check if focus is on browser window
+
+def browser_command(event):
+    if (active_window == True):
+        if event.name == 'new_tab': 
+            print('Browser: new_tab')
+            # keyboard.press('ctrl+t')
+            # keyboard.release('ctrl+t')
+        elif event.name == 'close_tab':
+            print('Browsser: close_tab')
+            # keyboard.press('ctrl+w')
+            # keyboard.release('ctrl+w')
+        elif event.name == 'new_window':
+            print('Browser: new_window')
+            # keyboard.press('ctrl+n')
+            # keyboard.release('ctrl+n')
+        elif event.name == 'close_window':
+            print('Browswer: close_window')
+            # keyboard.press('ctrl+shift+w')
+            # keyboard.release('ctrl+shift+w')
+    if (event.name == "p"):
+        print("Action: Screenshot")
         take_screenshot()
+        print("Action: Describe Image")
         describe_image()
 
 def take_screenshot():
@@ -60,9 +66,18 @@ def describe_image():
 def search_google(topic):
     url='https://www.google.com/search?q={}'.format(topic)
     webbrowser.open(url)
+    application_name = "browser"
+    time.sleep(2) # wait for 2 seconds; kinda bad
+    active_window = True
+    for i in range(0, 25):
+        time.sleep(0.03)
+        keyboard.press('tab')
 
-keyboard.on_press(chrome_command)
+
+# take_screenshot()
 print("waiting for next command...")
+keyboard.on_press(browser_command)
 
-# Keep the program running until esc
+
+# # Keep the program running until esc
 keyboard.wait('esc')  # Press 'esc' to exit the program

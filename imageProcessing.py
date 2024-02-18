@@ -13,7 +13,7 @@ def generate_text(project_id: str, file_path: str) -> str:
 
     # Query the model
     response = model.generate_content([
-        img, "Very briefly explain the central highlight image. Don't include the word screenshot when describing the image."
+        img, "Very briefly explain the central highlight image (around 30 words). Don't include the word screenshot when describing the image. Start the description with 'This is...'."
         ])
     topic = model.generate_content([response.text, "What is the main subject of this text? (e.g. 'a cat')"])
 
@@ -21,5 +21,5 @@ def generate_text(project_id: str, file_path: str) -> str:
     return response.text, topic.text
     # return
 
-response, topic = generate_text("hacktcnj2024", "screenshots/screenshot.jpg")
-print(response, "\n",topic)
+# response, topic = generate_text("hacktcnj2024", "screenshots/screenshot.jpg")
+# print(response, "\n",topic)
