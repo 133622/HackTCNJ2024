@@ -35,10 +35,9 @@ def determine_action(gesture, direction, handedness):
     if gesture == 'Closed_Fist':
         if handedness == 'Right':
             if direction == 'Up':
-                c.open_application('', True)
+                print('no_bind')
             elif direction == 'Down':
-                c.take_screenshot()
-                c.describe_image()
+                print('no_bind')
             elif direction == 'Left':
                 print('no_bind')
             elif direction == 'Right':
@@ -120,7 +119,8 @@ def determine_action(gesture, direction, handedness):
                 print('Set brightness')
                 c.prompt_specific_brightness()
             elif direction == 'Down':
-                print('no_bind')
+                c.take_screenshot()
+                c.describe_image()
             elif direction == 'Left':
                 print('no_bind')
             elif direction == 'Right':
@@ -132,7 +132,7 @@ def determine_action(gesture, direction, handedness):
                 print('Set volume')
                 c.prompt_specific_volume()
             elif direction == 'Down':
-                print('no_bind')
+                c.open_application('', True)
             elif direction == 'Left':
                 print('no_bind')
             elif direction == 'Right':
@@ -343,7 +343,7 @@ with GestureRecognizer.create_from_options(options) as recognizer, mp_hands.Hand
             
 
         cv2.imshow('Window', frame)
-        
+
         # keyboard.wait('esc')
 
         #esc key will end the program
