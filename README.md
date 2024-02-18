@@ -1,6 +1,9 @@
 # HackTCNJ2024
 
-![icon.png]
+![Event Logo](logo.png)
+
+
+![Application Logo](icon.png)
 
 SignWaver is a program that enables you to use gestures and voice commands to perform actions on your computer. This program is part of the HackTCNJ 2024 Event
 
