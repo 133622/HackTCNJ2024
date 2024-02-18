@@ -11,6 +11,11 @@ import commands as c
 import winsound 
 import time
 
+x_borders = (.3, .7)
+y_borders = (.2, .8)
+RED = (0, 0, 255)
+GREEN = (0, 255, 0)
+
 valid_signs = ['Closed_Fist', 'Victory', 'Pointing_Up', 'Thumb_Up']
 valid_browswers = ['Google Chrome', 'Floorp', 'Opera', 'Firefox', 'Microsoft Edge ']
 
@@ -109,7 +114,6 @@ def determine_action(gesture, direction, handedness):
                 c.browser_command('tab')
             else:
                 print('Invalid direction')
-        
     elif gesture == 'Thumb_Up':
         if handedness == 'Right':
             if direction == 'Up':
@@ -219,7 +223,7 @@ with GestureRecognizer.create_from_options(options) as recognizer, mp_hands.Hand
             #     print("Hand outside the screen!")
             
             last_guesses.append(current_gesture_label)
-            if len(last_guesses) > 3:
+            if len(last_guesses) > 30:
                 last_guesses.pop(0)  
 
             # if current_gesture_label in valid_signs:
@@ -236,31 +240,31 @@ with GestureRecognizer.create_from_options(options) as recognizer, mp_hands.Hand
 
             # avg_x= (leftmost_x + rightmost_x) / 2
             # avg_y = (topmost_y + bottommost_y) / 2
-            avg_x = np.mean(x_cords)
-            avg_y = np.mean(y_cords)
+            avg_x = (x_cords[0] + x_cords[5] + x_cords[17])/3
+            avg_y = (y_cords[0] + y_cords[5] + y_cords[17])/3
             hand = max(set(avg_handedness), key = avg_handedness.count)
             # print(current_gesture_label)
             if majority_guess in valid_signs and accepting_gesture:
-                if avg_x < 0.25:
+                if avg_x < x_borders[0]:
                     # print(majority_guess, "moved right", handedness)
                     determine_action(majority_guess, "Right", hand)
                     accepting_gesture = False
-                elif avg_x > .75:
+                elif avg_x > x_borders[1]:
                     # print(majority_guess, "moved left", hand)
                     determine_action(majority_guess, "Left", hand)
                     accepting_gesture = False
-                if avg_y < 0.25:
+                if avg_y < y_borders[0]:
                     # print(majority_guess, "moved up", hand)
                     determine_action(majority_guess, "Up", hand)
                     accepting_gesture = False
-                elif avg_y > .75:
+                elif avg_y > y_borders[1]:
                     # print(majority_guess, "moved down", hand)
                     determine_action(majority_guess, "Down", hand)
                     accepting_gesture = False
                 majority_guess = 'None'
                 last_guesses = []
 
-            if .4 <= avg_x <= .6 and .4 <= avg_y <= .6 and accepting_gesture == False:
+            if x_borders[0] <= avg_x <= x_borders[1] and y_borders[0] <= avg_y <= y_borders[1] and accepting_gesture == False:
                 accepting_gesture = True
                 # avg_handedness = []
                 # last_guesses = []
@@ -288,7 +292,7 @@ with GestureRecognizer.create_from_options(options) as recognizer, mp_hands.Hand
                 x = (leftmost_x + rightmost_x) / 2
                 y = (topmost_y + bottommost_y) / 2
                 
-                if not (.4 <= x <= .6 and .4 <= y <= .6):
+                if not (x_borders[0] <= x <= x_borders[1] and y_borders[0] <= y <= y_borders[1]):
                     if x < .5:
                         distance_x = x
                         if y < .5:

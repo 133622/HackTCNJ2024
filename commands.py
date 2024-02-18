@@ -181,11 +181,16 @@ def search_google(topic):
         time.sleep(0.03)
         keyboard.press('tab')
 
+word_filter = ["Tell me", "What is", "What's", "What are"]
+
 def enter_text():
     textToSpeech.speak_text("What would you like to type?")
     text = speechToText.record_text()
     if "Error" not in text:
-        pyautogui.write(text)
+        words = text.split()
+        filtered_words = [word for word in words if word not in word_filter]
+        filtered_text = ''.join(filtered_words)
+        pyautogui.write(filtered_text)
     else:
         textToSpeech.speak_text("Sorry, I didn't catch that")
 
