@@ -1,7 +1,6 @@
 import vertexai
 from vertexai.generative_models import GenerativeModel, Image
 
-
 def generate_text(project_id: str, file_path: str) -> str:
     # Initialize Vertex AI
     vertexai.init(project=project_id)
