@@ -18,6 +18,24 @@ x = 1
 application_name = '' # store the name of the application that is currently open
 active_window = False # flag to check if focus is on browser window
 
+# from ctypes import cast,POINTER
+# import math
+# import os
+# from comtypes import CLSCTX_ALL
+# from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+
+# devices = AudioUtilities.GetSpeakers()
+# interface = devices.Activate(IAudioEndpointVolume.iid, CLSCTX_ALL, None)
+
+# volume = cast(interface, POINTER(IAudioEndpointVolume))
+
+# def set_volume_percent(volume_percentage):
+#     volume.SetMasterVolumeLevel(34 * math.log(volume_percentage / 100, 10), None)
+
+def prompt_specific_volume():
+    textToSpeech.speak_text("Say what volume you would like to chose")
+    sp
+
 def increment_volume():
     textToSpeech.speak_text("Increasing volume by ten percent")
     pyautogui.press('volumeup')
@@ -45,6 +63,8 @@ def get_currently_active_window():
     application = application.strip()
     return application
 
+def type_spoken_input():
+    pass
 def open_application(application_name: str, tts: bool):
     has_name = tts;
     if (has_name):
@@ -79,6 +99,18 @@ def browser_command(event):
         print('Browswer: close_window')
         keyboard.press('ctrl+shift+tab')
         keyboard.release('ctrl+shift+tab')
+    elif event == 'enter':
+        print('Browswer: enter')
+        keyboard.press('enter')
+        keyboard.release('enter')
+    elif event == 'tab':
+        print('Browswer: tab')
+        keyboard.press('shift+tab')
+        keyboard.release('shift+tab')    
+    elif event == 'shift_tab':
+        print('Browswer: shift_tab')
+        keyboard.press('tab')
+        keyboard.release('tab') 
 
 def image_process():
     print("Action: Screenshot")
