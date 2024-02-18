@@ -1,3 +1,4 @@
+import keyboard
 import pandas as pd
 import os
 import random
@@ -32,7 +33,7 @@ def determine_action(gesture, direction, handedness):
                 c.open_application('', True)
             elif direction == 'Down':
                 c.take_screenshot()
-                # c.describe_image()
+                c.describe_image()
             elif direction == 'Left':
                 print('Action_C')
             elif direction == 'Right':
@@ -92,13 +93,16 @@ def determine_action(gesture, direction, handedness):
                     print('Invalid direction')
             else:
                 if direction == 'Up':
-                    print('Action_U')
+                    print("Enter")
+                    print('enter')
                 elif direction == 'Down':
                     print('Action_V')
                 elif direction == 'Left':
-                    print('Action_W')
+                    print("previous")
+                    c.browser_command('shift_tab')
                 elif direction == 'Right':
-                    print('Action_X')
+                    print("next")
+                    c.browser_command('tab')
                 else:
                     print('Invalid direction')
         
@@ -107,12 +111,11 @@ def determine_action(gesture, direction, handedness):
             if direction == 'Up':
                 print('Action_Y')
             elif direction == 'Down':
-                c.browser_command('enter')
+                print('no_bind')
             elif direction == 'Left':
-                c.browser_command('shift_tab')
-                print('Action_1')
+                print('no_bind')
             elif direction == 'Right':
-                c.browser_command('tab')
+                print("no_bind")
             else:
                 print('Invalid direction')
         else:
@@ -211,19 +214,20 @@ with GestureRecognizer.create_from_options(options) as recognizer, mp_hands.Hand
             #     print("Hand outside the screen!")
             
             last_guesses.append(current_gesture_label)
-            if len(last_guesses) > 5:
+            if len(last_guesses) > 3:
                 last_guesses.pop(0)  
 
-            if current_gesture_label in valid_signs:
-                last_valid_sign = current_gesture_label
-            # if majority_guess in valid_signs:
-            #     last_valid_sign = majority_guess
+            # if current_gesture_label in valid_signs:
+            #     last_valid_sign = current_gesture_label
 
             majority_guess = max(set(last_guesses), key=last_guesses.count)
             leftmost_x = min(x_cords)
             rightmost_x = max(x_cords)
             topmost_y = min(y_cords)
             bottommost_y = max(y_cords)
+
+            if majority_guess in valid_signs:
+                last_valid_sign = majority_guess
 
             # avg_x= (leftmost_x + rightmost_x) / 2
             # avg_y = (topmost_y + bottommost_y) / 2
@@ -254,7 +258,7 @@ with GestureRecognizer.create_from_options(options) as recognizer, mp_hands.Hand
             if .4 <= avg_x <= .6 and .4 <= avg_y <= .6 and accepting_gesture == False:
                 accepting_gesture = True
                 # avg_handedness = []
-                last_guesses = []
+                # last_guesses = []
                 winsound.Beep(1000, 200)
                 print('centered')
         else:
@@ -326,11 +330,13 @@ with GestureRecognizer.create_from_options(options) as recognizer, mp_hands.Hand
                                 determine_action(last_valid_sign, "Left", hand)
                                 accepting_gesture = False  
                 else:
-                    accepting_gesture = False
+                    accepting_gesture = True
             
 
-        # cv2.imshow('Window', frame)
+        cv2.imshow('Window', frame)
         
+        # keyboard.wait('esc')
+
         #esc key will end the program
         if cv2.waitKey(5) & 0xFF == 27:
             break
