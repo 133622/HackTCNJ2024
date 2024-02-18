@@ -1,3 +1,6 @@
+from AppOpener import open
+from win32gui import GetWindowText, GetForegroundWindow
+import pyautogui
 import keyboard
 import pyautogui
 import os
@@ -7,8 +10,43 @@ import speechToText
 import webbrowser
 import time
 
-application_name = "desktop" # store the name of the application that is currently open
+#Functions to control the OS
+pyautogui.FAILSAFE = False
+x = 1
+
+# Flags for commands
+application_name = '' # store the name of the application that is currently open
 active_window = False # flag to check if focus is on browser window
+
+def increment_volume():
+    pyautogui.press('volumeup')
+    
+def decrement_volume():
+    pyautogui.press('volumedown')
+
+def mute_volume():
+    pyautogui.press('volumemute')
+
+def get_currently_active_window():
+    window = GetWindowText(GetForegroundWindow())
+    # print(window)
+    application = window.split(" - ")[-1]
+    application = application.strip()
+    return application
+
+def open_application(application_name: str, tts: bool):
+    has_name = tts;
+    if (has_name):
+        textToSpeech.speak_text("What application would you like to open?")
+        application = speechToText.record_text()
+        if "Error" not in application:
+            textToSpeech.speak_text("Opening " + application)
+            open(application, match_closest=True)
+        else:
+            textToSpeech.speak_text("Sorry, program not found")
+    else:
+        textToSpeech.speak_text("Opening " + application_name)
+        open(application_name, match_closest=True) # Opens Chrome 
 
 def browser_command(event):
     if (active_window == True):
@@ -28,11 +66,12 @@ def browser_command(event):
             print('Browswer: close_window')
             # keyboard.press('ctrl+shift+w')
             # keyboard.release('ctrl+shift+w')
-    if (event.name == "p"):
-        print("Action: Screenshot")
-        take_screenshot()
-        print("Action: Describe Image")
-        describe_image()
+
+def image_process():
+    print("Action: Screenshot")
+    take_screenshot()
+    print("Action: Describe Image")
+    describe_image()
 
 def take_screenshot():
     file_names = os.listdir('screenshots')
@@ -73,11 +112,12 @@ def search_google(topic):
         time.sleep(0.03)
         keyboard.press('tab')
 
-
 # take_screenshot()
-print("waiting for next command...")
-keyboard.on_press(browser_command)
+# print("waiting for next command...")
+# keyboard.on_press(browser_command)
 
+# print(get_currently_active_window())
+# open_application(application_name="",tts=True)
 
 # # Keep the program running until esc
-keyboard.wait('esc')  # Press 'esc' to exit the program
+# keyboard.wait('esc')  # Press 'esc' to exit the program

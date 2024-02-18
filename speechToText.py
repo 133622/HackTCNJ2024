@@ -14,15 +14,15 @@ def record_text():
             print(text['alternative'][0]['transcript'])
             return text['alternative'][0]['transcript']
         except sr.UnknownValueError:
-            t = "Google Speech Recognition could not understand audio"
+            t = "Error: Google Speech Recognition could not understand audio"
             print(t)
             return t
         except sr.RequestError as e:
-            print(f"Could not request results from Google Speech Recognition service: {e}")
-            return "Could not request results from Google Speech Recognition service: {e}"
-        except Exception as e:
-            print(f"A terrible error has occurred: {e}")
-            return "A terrible error has occurred: {e}"
+            print(f"Error: Could not request results from Google Speech Recognition service: {e}")
+            return "Error: Could not request results from Google Speech Recognition service: {e}"
+        except Exception as e: # catch all exceptions !!!!!
+            print(f"Error: A terrible error has occurred: {e}")
+            return "Error: A terrible error has occurred: {e}"
 
 # record_text() 
 # function to get polarity of text (>0.4 is positive sentiment (yes), <0.5 is negative (no))
