@@ -3,6 +3,7 @@ import pyautogui
 import os
 import imageProcessing
 import textToSpeech
+import speechToText
 
 def chrome_command(event):
     if event.name == 'new_tab': 
@@ -24,6 +25,7 @@ def chrome_command(event):
     elif event.name == "p":
         print("screenshot")
         take_screenshot()
+        describe_image()
 
 def take_screenshot():
     file_names = os.listdir('screenshots')
@@ -38,10 +40,20 @@ def take_screenshot():
     screenshot = pyautogui.screenshot()
     screenshot.save(f'screenshots/screenshot.jpg')
 
-    # generate text from screenshot + 
-    text = imageProcessing.generate_text("hacktcnj2024", "screenshots/screenshot.jpg")
+def describe_image():
+    # generate text from screenshot + prompt user to learn more
+    text, topic = imageProcessing.generate_text("hacktcnj2024", "screenshots/screenshot.jpg")
     print(text)
     textToSpeech.speak_text(text)
+    print("prompting user")
+    textToSpeech.prompt_user()
+
+    answer = speechToText.get_polarity(speechToText.record_text())
+    if (answer >= 0.4):
+        response = "Great! I'm glad you're interested in learning more."
+    else:
+        response = "That's okay, let me know if you change your mind."
+    textToSpeech.speak_text(response)
 
 keyboard.on_press(chrome_command)
 print("waiting for next command...")
