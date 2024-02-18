@@ -12,7 +12,7 @@ def generate_text(project_id: str, file_path: str) -> str:
 
     # Query the model
     response = model.generate_content([
-        img, "Very briefly explain the central highlight image (around 30 words). Don't include the word screenshot when describing the image. Start the description with 'This is...'."
+        img, "Very briefly explain the central highlight image (around 20 words). Don't include the word screenshot when describing the image. Start the description with 'This is...'."
         ])
     topic = model.generate_content([response.text, "What is the main subject of this text? (e.g. 'a cat')"])
 

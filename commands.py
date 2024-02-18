@@ -15,6 +15,7 @@ import math
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from ctypes import cast,POINTER
 from comtypes import CLSCTX_ALL
+import screen_brightness_control as sbc
 
 #Functions to control the OS
 pyautogui.FAILSAFE = False
@@ -32,6 +33,17 @@ volume = cast(interface, POINTER(IAudioEndpointVolume))
 def set_volume_percent(volume_percentage):
     volume.SetMasterVolumeLevel(34 * math.log(volume_percentage / 100, 10), None)
 
+def set_brightness_percent(brightness_percent):
+    sbc.set_brightness(brightness_percent)  #takes as int from 0-100 I think
+
+def prompt_specific_brightness():
+    textToSpeech.speak_text("Set brightness?")
+    brightness = speechToText.record_text()
+    if "Error" not in brightness:
+        numbers = re.findall(r'\d+', brightness)
+        textToSpeech.speak_text("Setting brightness to " + numbers[0])
+        set_brightness_percent(int(numbers[0]))
+        
 def prompt_specific_volume():
     textToSpeech.speak_text("Set volume?")
     volume = speechToText.record_text()
@@ -39,6 +51,12 @@ def prompt_specific_volume():
         numbers = re.findall(r'\d+', volume)
         textToSpeech.speak_text("Setting volume to " + numbers[0])
         set_volume_percent(int(numbers[0]))
+
+def scroll_up():
+    pyautogui.press('pageup')
+
+def scroll_down():
+    pyautogui.press('pagedown')
 
 def increment_volume():
     textToSpeech.speak_text("Increasing volume")
@@ -67,8 +85,9 @@ def get_currently_active_window():
     application = application.strip()
     return application
 
-def type_spoken_input():
-    pass
+# def type_spoken_input():
+#     pass
+
 def open_application(application_name: str, tts: bool):
     has_name = tts;
     if (has_name):
@@ -161,6 +180,19 @@ def search_google(topic):
     for i in range(0, 25):
         time.sleep(0.03)
         keyboard.press('tab')
+
+word_filter = ["Tell me", "What is", "What's", "What are"]
+
+def enter_text():
+    textToSpeech.speak_text("What would you like to type?")
+    text = speechToText.record_text()
+    if "Error" not in text:
+        words = text.split()
+        filtered_words = [word for word in words if word not in word_filter]
+        filtered_text = ''.join(filtered_words)
+        pyautogui.write(filtered_text)
+    else:
+        textToSpeech.speak_text("Sorry, I didn't catch that")
 
 
 #--------------- Function Testing ----------------#
