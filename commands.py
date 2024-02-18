@@ -1,3 +1,4 @@
+# ungodly amount of imports
 from AppOpener import open
 from win32gui import GetWindowText, GetForegroundWindow
 import pyautogui
@@ -9,35 +10,38 @@ import textToSpeech
 import speechToText
 import webbrowser
 import time
+import re
+import math
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+from ctypes import cast,POINTER
+from comtypes import CLSCTX_ALL
 
 #Functions to control the OS
 pyautogui.FAILSAFE = False
-x = 1
 
 # Flags for commands
 application_name = '' # store the name of the application that is currently open
 active_window = False # flag to check if focus is on browser window
 
-# from ctypes import cast,POINTER
-# import math
-# import os
-# from comtypes import CLSCTX_ALL
-# from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+devices = AudioUtilities.GetSpeakers()
+interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
 
-# devices = AudioUtilities.GetSpeakers()
-# interface = devices.Activate(IAudioEndpointVolume.iid, CLSCTX_ALL, None)
+volume = cast(interface, POINTER(IAudioEndpointVolume))
 
-# volume = cast(interface, POINTER(IAudioEndpointVolume))
-
-# def set_volume_percent(volume_percentage):
-#     volume.SetMasterVolumeLevel(34 * math.log(volume_percentage / 100, 10), None)
+# THANKS ZACK <3
+def set_volume_percent(volume_percentage):
+    volume.SetMasterVolumeLevel(34 * math.log(volume_percentage / 100, 10), None)
 
 def prompt_specific_volume():
-    textToSpeech.speak_text("Say what volume you would like to chose")
-    sp
+    textToSpeech.speak_text("Set volume?")
+    volume = speechToText.record_text()
+    if "Error" not in volume:
+        numbers = re.findall(r'\d+', volume)
+        textToSpeech.speak_text("Setting volume to " + numbers[0])
+        set_volume_percent(int(numbers[0]))
 
 def increment_volume():
-    textToSpeech.speak_text("Increasing volume by ten percent")
+    textToSpeech.speak_text("Increasing volume")
     pyautogui.press('volumeup')
     pyautogui.press('volumeup')
     pyautogui.press('volumeup')
@@ -45,7 +49,7 @@ def increment_volume():
     pyautogui.press('volumeup')
     
 def decrement_volume():
-    textToSpeech.speak_text("Decreasing volume by ten percent")
+    textToSpeech.speak_text("Decreasing volume")
     pyautogui.press('volumedown')
     pyautogui.press('volumedown')
     pyautogui.press('volumedown')
@@ -158,6 +162,10 @@ def search_google(topic):
         time.sleep(0.03)
         keyboard.press('tab')
 
+
+#--------------- Function Testing ----------------#
+        
+# prompt_specific_volume()
 # take_screenshot()
 # print("waiting for next command...")
 # keyboard.on_press(browser_command)
