@@ -4,6 +4,7 @@ import os
 import imageProcessing
 import textToSpeech
 import speechToText
+import webbrowser
 
 def chrome_command(event):
     if event.name == 'new_tab': 
@@ -51,9 +52,14 @@ def describe_image():
     answer = speechToText.get_polarity(speechToText.record_text())
     if (answer >= 0.4):
         response = "Great! I'm glad you're interested in learning more."
+        search_google(topic)
     else:
         response = "That's okay, let me know if you change your mind."
     textToSpeech.speak_text(response)
+
+def search_google(topic):
+    url='https://www.google.com/search?q={}'.format(topic)
+    webbrowser.open(url)
 
 keyboard.on_press(chrome_command)
 print("waiting for next command...")
