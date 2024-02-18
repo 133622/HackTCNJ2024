@@ -12,7 +12,7 @@ import winsound
 import time
 
 valid_signs = ['Closed_Fist', 'Victory', 'Pointing_Up', 'Thumb_Up']
-valid_browswers = ['Google Chrome', 'Floorp', 'Opera', 'Firefox', 'Microsoft Edge']
+valid_browswers = ['Google Chrome', 'Floorp', 'Opera', 'Firefox', 'Microsoft Edge ']
 
 current_gesture = None
 model_path = 'C:/Users/bengu/Documents/GitHub/HackTCNJ2024/gesture_recognizer.task'
@@ -35,20 +35,20 @@ def determine_action(gesture, direction, handedness):
                 c.take_screenshot()
                 c.describe_image()
             elif direction == 'Left':
-                print('Action_C')
+                print('no_bind')
             elif direction == 'Right':
-                print('Action_D')
+                print('no_bind')
             else:
                 print('Invalid direction')
         else:
             if direction == 'Up':
-                print('Action_E')
+                print('no_bind')
             elif direction == 'Down':
-                print('Action_F')
+                print('no_bind')
             elif direction == 'Left':
-                print('Action_G')
+                print('no_bind')
             elif direction == 'Right':
-                print('Action_H')
+                print('no_bind')
             else:
                 print('Invalid direction')
         
@@ -66,21 +66,24 @@ def determine_action(gesture, direction, handedness):
                 print('Invalid direction')
         else:
             if direction == 'Up':
-                print('Action_M')
+                print('scroll_up')
+                c.scroll_up()
             elif direction == 'Down':
-                print('Action_N')
+                print('scroll_down')
+                c.scroll_down()
             elif direction == 'Left':
-                print('Action_O')
+                print('scroll_up')
+                c.scroll_up()
             elif direction == 'Right':
-                print('Action_P')
+                print('scroll_down')
+                c.scroll_down()
             else:
                 print('Invalid direction')
-        
     elif gesture == 'Pointing_Up':
         application = c.get_currently_active_window()
         print(application)
-        if application in valid_browswers:
-            if handedness == 'Right':
+        if handedness == 'Right':
+            if application in valid_browswers:
                 if direction == 'Up':
                     c.browser_command('new_tab')
                 elif direction == 'Down':
@@ -91,25 +94,27 @@ def determine_action(gesture, direction, handedness):
                     c.browser_command('right_tab')
                 else:
                     print('Invalid direction')
+        else:
+            if direction == 'Up':
+                print("Enter")
+                c.browser_command('enter')
+            elif direction == 'Down':
+                print('Type')
+                c.enter_text()
+            elif direction == 'Left':
+                print("previous")
+                c.browser_command('shift_tab')
+            elif direction == 'Right':
+                print("next")
+                c.browser_command('tab')
             else:
-                if direction == 'Up':
-                    print("Enter")
-                    print('enter')
-                elif direction == 'Down':
-                    print('Action_V')
-                elif direction == 'Left':
-                    print("previous")
-                    c.browser_command('shift_tab')
-                elif direction == 'Right':
-                    print("next")
-                    c.browser_command('tab')
-                else:
-                    print('Invalid direction')
+                print('Invalid direction')
         
     elif gesture == 'Thumb_Up':
         if handedness == 'Right':
             if direction == 'Up':
-                print('Action_Y')
+                print('Set brightness')
+                c.prompt_specific_brightness()
             elif direction == 'Down':
                 print('no_bind')
             elif direction == 'Left':
@@ -120,14 +125,14 @@ def determine_action(gesture, direction, handedness):
                 print('Invalid direction')
         else:
             if direction == 'Up':
-                print('Action_3')
+                print('Set volume')
+                c.prompt_specific_volume()
             elif direction == 'Down':
-                print('Action_4')
+                print('no_bind')
             elif direction == 'Left':
-                print('Action_5')
+                print('no_bind')
             elif direction == 'Right':
-
-                print('Action_6')
+                print('no_bind')
             else:
                 print('Invalid direction')
         
