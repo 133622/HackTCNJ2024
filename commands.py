@@ -19,12 +19,23 @@ application_name = '' # store the name of the application that is currently open
 active_window = False # flag to check if focus is on browser window
 
 def increment_volume():
+    textToSpeech.speak_text("Increasing volume by ten percent")
+    pyautogui.press('volumeup')
+    pyautogui.press('volumeup')
+    pyautogui.press('volumeup')
+    pyautogui.press('volumeup')
     pyautogui.press('volumeup')
     
 def decrement_volume():
+    textToSpeech.speak_text("Decreasing volume by ten percent")
+    pyautogui.press('volumedown')
+    pyautogui.press('volumedown')
+    pyautogui.press('volumedown')
+    pyautogui.press('volumedown')
     pyautogui.press('volumedown')
 
 def mute_volume():
+    textToSpeech.speak_text("Toggle mute")
     pyautogui.press('volumemute')
 
 def get_currently_active_window():
@@ -48,24 +59,26 @@ def open_application(application_name: str, tts: bool):
         textToSpeech.speak_text("Opening " + application_name)
         open(application_name, match_closest=True) # Opens Chrome 
 
+# PLEASE ONLY CALL THIS IF A BROWSER WINDOW IS OPEN
 def browser_command(event):
-    if (active_window == True):
-        if event.name == 'new_tab': 
-            print('Browser: new_tab')
-            # keyboard.press('ctrl+t')
-            # keyboard.release('ctrl+t')
-        elif event.name == 'close_tab':
-            print('Browsser: close_tab')
-            # keyboard.press('ctrl+w')
-            # keyboard.release('ctrl+w')
-        elif event.name == 'new_window':
-            print('Browser: new_window')
-            # keyboard.press('ctrl+n')
-            # keyboard.release('ctrl+n')
-        elif event.name == 'close_window':
-            print('Browswer: close_window')
-            # keyboard.press('ctrl+shift+w')
-            # keyboard.release('ctrl+shift+w')
+    if event == 'new_tab': 
+        print('Browser: new_tab')
+        # textToSpeech.speak_text("Opening new tab")
+        keyboard.press('ctrl+t')
+        keyboard.release('ctrl+t')
+    elif event == 'close_tab':
+        print('Browsser: close_tab')
+        # textToSpeech.speak_text("Closing tab")
+        keyboard.press('ctrl+w')
+        keyboard.release('ctrl+w')
+    elif event == 'left_tab':
+        print('Browser: new_window')
+        keyboard.press('ctrl+tab')
+        keyboard.release('ctrl+tab')
+    elif event == 'right_tab':
+        print('Browswer: close_window')
+        keyboard.press('ctrl+shift+tab')
+        keyboard.release('ctrl+shift+tab')
 
 def image_process():
     print("Action: Screenshot")
@@ -74,6 +87,7 @@ def image_process():
     describe_image()
 
 def take_screenshot():
+    textToSpeech.speak_text("Processing image")
     file_names = os.listdir('screenshots')
 
     # clear screenshots folder before taking new screenshot

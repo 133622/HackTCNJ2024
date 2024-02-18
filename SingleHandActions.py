@@ -6,8 +6,10 @@ import pickle
 import cv2
 import mediapipe as mp
 import re
+import commands as c
 
 valid_signs = ['Closed_Fist', 'Victory', 'Pointing_Up', 'Thumb_Up']
+valid_browswers = ['Google Chrome', 'Floorp', 'Opera', 'Firefox', 'Microsoft Edge']
 
 current_gesture = None
 model_path = 'C:/Users/bengu/Documents/GitHub/HackTCNJ2024/gesture_recognizer.task'
@@ -26,9 +28,10 @@ def determine_action(gesture, direction, handedness):
     if gesture == 'Closed_Fist':
         if handedness == 'Right':
             if direction == 'Up':
-                print('Action_A')
+                c.open_application('', True)
             elif direction == 'Down':
-                print('Action_B')
+                c.take_screenshot()
+                c.describe_image()
             elif direction == 'Left':
                 print('Action_C')
             elif direction == 'Right':
@@ -50,13 +53,13 @@ def determine_action(gesture, direction, handedness):
     elif gesture == 'Victory':
         if handedness == 'Right':
             if direction == 'Up':
-                print('Action_I')
+                c.increment_volume()
             elif direction == 'Down':
-                print('Action_J')
+                c.decrement_volume()
             elif direction == 'Left':
-                print('Action_K')
+                c.mute_volume()
             elif direction == 'Right':
-                print('Action_L')
+                c.mute_volume()
             else:
                 print('Invalid direction')
         else:
@@ -72,28 +75,31 @@ def determine_action(gesture, direction, handedness):
                 print('Invalid direction')
         
     elif gesture == 'Pointing_Up':
-        if handedness == 'Right':
-            if direction == 'Up':
-                print('Action_Q')
-            elif direction == 'Down':
-                print('Action_R')
-            elif direction == 'Left':
-                print('Action_S')
-            elif direction == 'Right':
-                print('Action_T')
+        application = c.get_currently_active_window()
+        print(application)
+        if application in valid_browswers:
+            if handedness == 'Right':
+                if direction == 'Up':
+                    c.browser_command('new_tab')
+                elif direction == 'Down':
+                    c.browser_command('close_tab')
+                elif direction == 'Left':
+                    c.browser_command('left_tab')
+                elif direction == 'Right':
+                    c.browser_command('right_tab')
+                else:
+                    print('Invalid direction')
             else:
-                print('Invalid direction')
-        else:
-            if direction == 'Up':
-                print('Action_U')
-            elif direction == 'Down':
-                print('Action_V')
-            elif direction == 'Left':
-                print('Action_W')
-            elif direction == 'Right':
-                print('Action_X')
-            else:
-                print('Invalid direction')
+                if direction == 'Up':
+                    print('Action_U')
+                elif direction == 'Down':
+                    print('Action_V')
+                elif direction == 'Left':
+                    print('Action_W')
+                elif direction == 'Right':
+                    print('Action_X')
+                else:
+                    print('Invalid direction')
         
     elif gesture == 'Thumb_Up':
         if handedness == 'Right':
