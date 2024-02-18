@@ -35,7 +35,7 @@ def determine_action(gesture, direction, handedness):
                 print('Action_D')
             else:
                 print('Invalid direction')
-        elif handedness == 'Left':
+        else:
             if direction == 'Up':
                 print('Action_E')
             elif direction == 'Down':
@@ -46,8 +46,7 @@ def determine_action(gesture, direction, handedness):
                 print('Action_H')
             else:
                 print('Invalid direction')
-        else:
-            print('Invalid handedness')
+        
     elif gesture == 'Victory':
         if handedness == 'Right':
             if direction == 'Up':
@@ -60,7 +59,7 @@ def determine_action(gesture, direction, handedness):
                 print('Action_L')
             else:
                 print('Invalid direction')
-        elif handedness == 'Left':
+        else:
             if direction == 'Up':
                 print('Action_M')
             elif direction == 'Down':
@@ -71,8 +70,7 @@ def determine_action(gesture, direction, handedness):
                 print('Action_P')
             else:
                 print('Invalid direction')
-        else:
-            print('Invalid handedness')
+        
     elif gesture == 'Pointing_Up':
         if handedness == 'Right':
             if direction == 'Up':
@@ -85,7 +83,7 @@ def determine_action(gesture, direction, handedness):
                 print('Action_T')
             else:
                 print('Invalid direction')
-        elif handedness == 'Left':
+        else:
             if direction == 'Up':
                 print('Action_U')
             elif direction == 'Down':
@@ -96,8 +94,7 @@ def determine_action(gesture, direction, handedness):
                 print('Action_X')
             else:
                 print('Invalid direction')
-        else:
-            print('Invalid handedness')
+        
     elif gesture == 'Thumb_Up':
         if handedness == 'Right':
             if direction == 'Up':
@@ -110,7 +107,7 @@ def determine_action(gesture, direction, handedness):
                 print('Action_2')
             else:
                 print('Invalid direction')
-        elif handedness == 'Left':
+        else:
             if direction == 'Up':
                 print('Action_3')
             elif direction == 'Down':
@@ -121,8 +118,7 @@ def determine_action(gesture, direction, handedness):
                 print('Action_6')
             else:
                 print('Invalid direction')
-        else:
-            print('Invalid handedness')
+        
     else:
         print('Invalid gesture')
 
@@ -153,6 +149,8 @@ accepting_gesture = True
 last_valid_sign = None
 x_cords = [0] * 21
 y_cords = [0] * 21
+lost = False
+majority_guess = 'None'
 with GestureRecognizer.create_from_options(options) as recognizer, mp_hands.Hands(
     static_image_mode=True,
     max_num_hands=1,
@@ -213,80 +211,91 @@ with GestureRecognizer.create_from_options(options) as recognizer, mp_hands.Hand
 
             avg_x = np.mean(x_cords)
             avg_y = np.mean(y_cords)
-            handedness = max(set(avg_handedness), key = avg_handedness.count)
+            hand = max(set(avg_handedness), key = avg_handedness.count)
             # print(current_gesture_label)
             if majority_guess in valid_signs and accepting_gesture:
-                if avg_x < 0.1:
+                if avg_x < 0.25:
                     # print(majority_guess, "moved right", handedness)
-                    determine_action(majority_guess, "Right", handedness)
+                    determine_action(majority_guess, "Right", hand)
                     accepting_gesture = False
-                elif avg_x > .9:
-                    # print(majority_guess, "moved left", handedness)
-                    determine_action(majority_guess, "Left", handedness)
+                elif avg_x > .75:
+                    # print(majority_guess, "moved left", hand)
+                    determine_action(majority_guess, "Left", hand)
                     accepting_gesture = False
-                if avg_y < 0.1:
-                    # print(majority_guess, "moved up", handedness)
-                    determine_action(majority_guess, "Up", handedness)
+                if avg_y < 0.25:
+                    # print(majority_guess, "moved up", hand)
+                    determine_action(majority_guess, "Up", hand)
                     accepting_gesture = False
-                elif avg_y > .9:
-                    # print(majority_guess, "moved down", handedness)
-                    determine_action(majority_guess, "Down", handedness)
+                elif avg_y > .75:
+                    # print(majority_guess, "moved down", hand)
+                    determine_action(majority_guess, "Down", hand)
                     accepting_gesture = False
                 majority_guess = 'None'
                 last_guesses = []
 
-            if .3 <= avg_x <= .7 and .3 <= avg_y <= .7 and accepting_gesture == False:
+            if .4 <= avg_x <= .6 and .4 <= avg_y <= .6 and accepting_gesture == False:
                 accepting_gesture = True
+                avg_handedness = []
                 print('centered')
         else:
             if accepting_gesture and last_valid_sign is not None:
-                x = (prev_x[0]+prev_x[5]+prev_x[17])/3
-                y = (prev_y[0]+prev_y[5]+prev_y[17])/3
-                if x < .5:
-                    distance_x = x
-                    if y < .5:
-                        distance_y = y
-                        if distance_y < distance_x:
-                            # print(last_valid_sign, "closest up", handedness)
-                            determine_action(last_valid_sign, "Up", handedness)
-                            accepting_gesture = False
-                        else:
-                            # print(last_valid_sign, "closest right", handedness)
-                            determine_action(last_valid_sign, "Right", handedness)
+                leftmost_x = min(prev_x)
+                rightmost_x = max(prev_x)
+                topmost_y = min(prev_y)
+                bottommost_y = max(prev_y)
 
-                            accepting_gesture = False
-                    else:
-                        distance_y = 1 - y 
-                        if distance_y < distance_x:
-                            # print(last_valid_sign, "closest down", handedness)
-                            determine_action(last_valid_sign, "Down", handedness)
-                            accepting_gesture = False
+                x = (leftmost_x + rightmost_x) / 2
+                y = (topmost_y + bottommost_y) / 2
+
+                if not (.4 <= x <= .6 and .4 <= y <= .6):
+                    if x < .5:
+                        distance_x = x
+                        if y < .5:
+                            distance_y = y
+                            if distance_y < distance_x:
+                                # print(last_valid_sign, "closest up", hand)
+                                determine_action(last_valid_sign, "Up", hand)
+                                accepting_gesture = False
+                            else:
+                                # print(last_valid_sign, "closest right", hand)
+                                determine_action(last_valid_sign, "Right", hand)
+
+                                accepting_gesture = False
                         else:
-                            # print(last_valid_sign, "closest right", handedness)
-                            determine_action(last_valid_sign, "Right", handedness)
-                            accepting_gesture = False
+                            distance_y = 1 - y 
+                            if distance_y < distance_x:
+                                # print(last_valid_sign, "closest down", hand)
+                                determine_action(last_valid_sign, "Down", hand)
+                                accepting_gesture = False
+                            else:
+                                # print(last_valid_sign, "closest right", hand)
+                                determine_action(last_valid_sign, "Right", hand)
+                                accepting_gesture = False
+                    else:
+                        distance_x = 1 - x
+                        if y < .5:
+                            distance_y = y
+                            if distance_y < distance_x:
+                                # print(last_valid_sign, "closest up", hand)
+                                determine_action(last_valid_sign, "Up", hand)
+                                accepting_gesture = False
+                            else:
+                                # print(last_valid_sign, "closest left", hand)
+                                determine_action(last_valid_sign, "Left", hand)
+                                accepting_gesture = False
+                        else:
+                            distance_y = 1 - y 
+                            if distance_y < distance_x:
+                                # print(last_valid_sign, "closest down", hand)
+                                determine_action(last_valid_sign, "Down", hand)
+                                accepting_gesture = False
+                            else:
+                                # print(last_valid_sign, "closest left", hand)
+                                determine_action(last_valid_sign, "Left", hand)
+                                accepting_gesture = False  
                 else:
-                    distance_x = 1 - x
-                    if y < .5:
-                        distance_y = y
-                        if distance_y < distance_x:
-                            # print(last_valid_sign, "closest up", handedness)
-                            determine_action(last_valid_sign, "Up", handedness)
-                            accepting_gesture = False
-                        else:
-                            # print(last_valid_sign, "closest left", handedness)
-                            determine_action(last_valid_sign, "Left", handedness)
-                            accepting_gesture = False
-                    else:
-                        distance_y = 1 - y 
-                        if distance_y < distance_x:
-                            # print(last_valid_sign, "closest down", handedness)
-                            determine_action(last_valid_sign, "Down", handedness)
-                            accepting_gesture = False
-                        else:
-                            # print(last_valid_sign, "closest left", handedness)
-                            determine_action(last_valid_sign, "Left", handedness)
-                            accepting_gesture = False
+                    accepting_gesture = False
+            
 
         cv2.imshow('Window', frame)
         
