@@ -1,9 +1,14 @@
-# <b>HackTCNJ2024</b>
+# HackTCNJ2024
 
-<a href="https://www.hacktcnj.com" target="blank"><img align="center" src="logo.png" height="200" /></a>
+<p align="center">
+  <a href="https://www.hacktcnj.com" target="blank"><img align="center" src="logo.png" height="200"/></a>
+</p>
+
+<p align="center">
+  <a href="https://devpost.com/submit-to/20389-hacktcnj-2024/manage/submissions/480854-signwaver/" target="blank"><img align="center" src="icon.png" height="200"/></a>
+</p>
 
 
-<a href="https://devpost.com/submit-to/20389-hacktcnj-2024/manage/submissions/480854-signwaver/" target="blank"><img align="center" src="icon.png" height="200"/></a>
 
 ---
 
