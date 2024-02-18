@@ -41,16 +41,18 @@ def prompt_specific_brightness():
     brightness = speechToText.record_text()
     if "Error" not in brightness:
         numbers = re.findall(r'\d+', brightness)
-        textToSpeech.speak_text("Setting brightness to " + numbers[0])
-        set_brightness_percent(int(numbers[0]))
+        if numbers:
+            textToSpeech.speak_text("Setting brightness to " + numbers[0])
+            set_brightness_percent(int(numbers[0]))
         
 def prompt_specific_volume():
     textToSpeech.speak_text("Set volume?")
     volume = speechToText.record_text()
     if "Error" not in volume:
         numbers = re.findall(r'\d+', volume)
-        textToSpeech.speak_text("Setting volume to " + numbers[0])
-        set_volume_percent(int(numbers[0]))
+        if numbers:
+            textToSpeech.speak_text("Setting volume to " + numbers[0])
+            set_volume_percent(int(numbers[0]))
 
 def scroll_up():
     pyautogui.press('pageup')
